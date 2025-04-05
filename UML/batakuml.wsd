@@ -1,0 +1,58 @@
+@startuml
+class GameController {
+    - koz: str
+    - eller: list
+    - yer: list
+    - sira: int
+    - ilk_tur: str
+    - score_manager: ScoreManager
+    - oyuncu_adlari: dict
+    + kart_at(oyuncu, kart)
+    + eli_tamamla()
+    + masa_temizle()
+}
+
+class BotManager {
+    + bot_oyna(bot_el, yer, koz, ilk_tur): str
+}
+
+class ScoreManager {
+    - skorlar: dict
+    - el_gecmisleri: list
+    + el_kazanan(oyuncu_id)
+    + skor_getir(oyuncu_id)
+    + skor_tablosu()
+    + resetle()
+}
+
+class GameScreen {
+    - screen: pygame.Surface
+    - kart_gorselleri: dict
+    + kartlari_yukle()
+    + render_enemy_hand(oyuncu_no, kart_sayisi)
+    + render_hand_images(hand)
+    + render_played_cards(played_cards)
+    + goster_el_kazanan(oyuncu_adi)
+    + render_continue_button()
+    + render_restart_button()
+}
+
+class Rules {
+    + kagit_puan(kart): int
+    + yer_kime_kaldi(yer, koz, ilk_tur): int
+}
+
+class deck {
+    + kagit_dagit(): list[list[str]]
+}
+
+GameController --> ScoreManager
+GameController --> Rules
+GameController --> deck
+GameController --> BotManager
+GameController --> GameScreen
+main.py --> GameController
+main.py --> GameScreen
+main.py --> BotManager
+
+@enduml

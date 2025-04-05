@@ -1,0 +1,44 @@
+@startuml
+start
+
+:pygame.init();
+:create screen;
+:create GameController;
+:create GameScreen;
+
+repeat
+  :fill screen (green);
+  if (Tüm eller boş?) then (evet)
+    :Oyun bitti;
+    stop
+  endif
+
+  if (El tamamlandı mı?) then (evet)
+    :Kazananı göster;
+    :3 saniye bekle;
+    :Devam Et butonu göster;
+    if (Devam Et tıklanır mı?) then (evet)
+      :masa_temizle();
+      :aktif oyuncuyu güncelle;
+    else
+      :buton bekleniyor;
+    endif
+  else
+    if (Aktif Oyuncu insan mı?) then (evet)
+      :mouse tıklaması bekleniyor;
+      if (geçerli kart?) then (evet)
+        :kart_at();
+        :ilk_tur güncelle;
+        :aktif_oyuncu++;
+      endif
+    else
+      :bot_oyna();
+      :kart_at();
+      :aktif_oyuncu++;
+    endif
+  endif
+
+  :ekranı güncelle (display.flip);
+
+repeat while (running)
+@enduml

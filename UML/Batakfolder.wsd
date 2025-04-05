@@ -1,0 +1,20 @@
+@startuml
+title Batak_Oyunu Dizin Yapısı
+
+folder "Batak_Oyunu" {
+  
+  folder "assets" {
+    folder "images" {
+      [Kart Resimleri]
+    }
+  }
+
+  [main.py]
+  [screens.py]
+  [game_controller.py]
+  [botmanage.py]
+  [rules.py]
+  [deck.py]
+}
+
+@enduml

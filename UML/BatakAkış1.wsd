@@ -1,0 +1,41 @@
+@startuml
+actor Player0 as "Oyuncu (Sen)"
+participant Main
+participant GameController
+participant GameScreen
+participant BotManager
+participant ScoreManager
+participant Rules
+
+== El Başlatılıyor ==
+
+Main -> GameScreen : render_played_cards()
+Main -> Player0 : kart seçimi bekleniyor
+Player0 -> Main : kart tıklama
+Main -> GameController : kart_at(0, kart)
+GameController -> Rules : kagit_puan(kart)
+GameController -> GameController : yer'e kart eklenir
+
+== Botlar Oynar ==
+
+Main -> BotManager : bot_oyna(el, yer, koz, ilk_tur)
+BotManager --> Main : seçilen kart
+Main -> GameController : kart_at(bot_id, kart)
+GameController -> Rules : kagit_puan(kart)
+GameController -> GameController : yer'e kart eklenir
+loop bot 1'den bot 3'e kadar
+end
+
+== El Tamamlanır ==
+
+Main -> GameController : eli_tamamla()
+GameController -> Rules : yer_kime_kaldi(yer, koz, ilk_tur)
+Rules --> GameController : kazanan_id
+GameController -> ScoreManager : el_kazanan(kazanan_id)
+GameController --> Main : kazanan_id
+
+Main -> GameScreen : goster_el_kazanan()
+
+Main -> GameController : masa_temizle()
+
+@enduml
