@@ -2,43 +2,70 @@
 start
 
 :pygame.init();
-:create screen;
+:create ekran (1500x800);
 :create GameController;
 :create GameScreen;
+:create BotManager;
+:set aktif_oyuncu = 0;
+:set el_bekle = False;
 
 repeat
-  :fill screen (green);
+  :screen.fill((0, 100, 0));
+  :render_kurallar_button();
+
+  if (kurallar_goster == True) then (evet)
+    :kurallari_goster();
+    if (Kapat butonu tıklandı?) then (evet)
+      :kurallar_goster = False;
+    endif
+  endif
+
   if (Tüm eller boş?) then (evet)
-    :Oyun bitti;
+    :Oyun bitti (kartlar tükendi);
     stop
   endif
 
-  if (El tamamlandı mı?) then (evet)
-    :Kazananı göster;
-    :3 saniye bekle;
-    :Devam Et butonu göster;
-    if (Devam Et tıklanır mı?) then (evet)
-      :masa_temizle();
-      :aktif oyuncuyu güncelle;
+  if (el_bekle == True) then (evet)
+    :goster_el_kazanan();
+    if (3 saniye geçti?) then (evet)
+      :render_continue_button();
+      if (Devam Et tıklanır?) then (evet)
+        :masa_temizle();
+        :aktif_oyuncu = kazanan;
+        :el_bekle = False;
+      else
+        :Devam butonu bekleniyor;
+      endif
     else
-      :buton bekleniyor;
+      :3 saniyeyi bekle;
     endif
   else
-    if (Aktif Oyuncu insan mı?) then (evet)
+    if (aktif_oyuncu == 0) then (Oyuncu)
       :mouse tıklaması bekleniyor;
       if (geçerli kart?) then (evet)
-        :kart_at();
-        :ilk_tur güncelle;
+        :kart_at(oyuncu);
+        :ilk_tur ayarla;
         :aktif_oyuncu++;
       endif
     else
-      :bot_oyna();
-      :kart_at();
-      :aktif_oyuncu++;
+      if (bot elinde kart var mı?) then (evet)
+        :bot_oyna();
+        :kart_at(bot);
+        :aktif_oyuncu = (aktif_oyuncu + 1) % 4;
+      endif
+    endif
+
+    if (len(controller.yer) == 4) then (evet)
+      :eli_tamamla();
+      :kazananı belirle;
+      :el sayısını artır;
+      :el_bekle = True;
+      :başlangıç zamanı kaydet;
     endif
   endif
 
-  :ekranı güncelle (display.flip);
-
+  :ekranı güncelle (pygame.display.flip());
 repeat while (running)
+
+stop
 @enduml
